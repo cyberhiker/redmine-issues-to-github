@@ -47,6 +47,8 @@ them to a github repository.
 
 @author Markus Tacker <m@coderbyheart.de>'''
 
+import io
+import sys
 from xml.dom.minidom import parse, parseString
 from minidomutil import domGetText
 import urllib.request
@@ -388,13 +390,7 @@ class MyRequest(urllib.request.Request):
             else:
                 return "GET"
 
-if __name__ == '__main__':
-    import io
-    import sys
-    import os
-    import xmlrpc.client
-    import configparser
-    
+if __name__ == '__main__':   
     issuesfile = 'issues.xml'
     user = 'github-user'
     repo = 'github-repo'
