@@ -143,7 +143,7 @@ class RedmineIssueXML(object):
                 issue.assignee = self.userMap[assignedId]
         
         issue.labels.append(redmineIssue.tracker['name'])
-        issue.labels.append("Prio-" + redmineIssue.priority['name'])
+        issue.labels.append(redmineIssue.priority['name'])
         if redmineIssue.category:
             issue.labels.append(redmineIssue.category['name'])
         if redmineIssue.fixed_version:
@@ -213,6 +213,8 @@ class RedmineIssueXML(object):
                 print("Issue %d already exists." % int(issue.id))
                 if githubissuedata['body'] != issue.body:
                     self.createComment(issue.id, issue.title + "\n\n" + issue.body)
+                if githubissuedata['title'] != issue.title:
+                    self.editIssue(issue.id, issue.title, body=issue.body, milestone=milestone, labels=issue.labels, assignee=issue.assignee)
             else:
                 self.createIssue(issue.title, body=issue.body, milestone=milestone, labels=issue.labels, assignee=issue.assignee)
                 # Close tickets
@@ -265,7 +267,43 @@ class RedmineIssueXML(object):
             print(e.msg)
             print(e.fp.read().decode('utf-8'))
             raise e
+
+    def editIssue(self, id, title, body=None, assignee=None, milestone=None, labels=None):
+        'Edit an existing issue on github'
+        url = self.baseurl + "issues"
         
+        issuedata = {
+            'title': title,
+        }
+        if body:
+            issuedata['body'] = body
+        if assignee:
+            issuedata['assignee'] = assignee
+        if milestone:
+            issuedata['milestone'] = milestone
+        if labels:
+            issuedata['labels'] = labels
+        
+        data = json.dumps(issuedata)
+        clen = len(data)
+        data = data.encode('utf-8')
+        
+        req = urllib.request.Request(url)
+        req.method = "PATCH"
+        req.add_header('Authorization', 'Basic %s' % self.authData)
+        req.add_header('Content-Type', 'application/json')
+        req.add_header('Content-Length', str(clen))
+        try:
+            res = urllib.request.urlopen(req, data)
+            print("Edited ticket %s" % title)
+            return json.loads(res.read().decode('utf-8'))
+        except urllib.error.HTTPError as e:
+            print(e.msg)
+            print(e.fp.read().decode('utf-8'))
+            raise e
+'''
+    
+'''
     def createComment(self, id, body):
         'Add a comment to an issue'
         url = self.baseurl + "issues/" + id + "/comments"
@@ -391,19 +429,18 @@ class MyRequest(urllib.request.Request):
                 return "GET"
 
 if __name__ == '__main__':   
-    issuesfile = 'issues.xml'
-    user = 'github-user'
-    repo = 'github-repo'
-    authUser = 'your-github-username'
-    authPassword = 'your-github-password'
+    issuesfile = 'MaintenanceServiceIssues.xml'
+    user = 'cyberhiker'
+    repo = 'RedSpartanMaintenance'
+    authUser = 'cyberhiker'
+    authPassword = 'k7%9F!8i'
     
     rix = RedmineIssueXML()
     rix.readXML(
        issuesfile, 
        closedStati = [3,5,6], # Redmine ID of closed ticket states
        userMap = { # Map redmine user id to github usernames
-           1: 'your-github-username',
-           2: 'colleague-github-username',
+           1: 'cyberhiker',
        }
     )
     rix.publishIssues(user, repo, authUser, authPassword)

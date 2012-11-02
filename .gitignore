@@ -2,3 +2,7 @@
 .project
 __pycache__
 .settings
+
+.DS_Store
+
+*.xml
