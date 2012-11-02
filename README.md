@@ -12,9 +12,13 @@ See <http://www.redmine.org/projects/redmine/wiki/Rest_api> and
 
 Step 1, get Python 3.
 
+Step 2, Run a cURL command similar to this one:
+ 
+`curl -v -H "Content-Type: application/xml" -X GET -u username:password -o issueStatuses.xml http://redmine/issue_statuses.xml`
+
 Step 2, See this page <http://www.redmine.org/projects/redmine/wiki/Rest_api> and construct a cURL command similar to this one:
 
-'curl -v -H "Content-Type: application/xml" -X GET -u username:password -o projectIssues.xml http://redmine/issues.xml?project_id=1&status_id=*'
+`curl -v -H "Content-Type: application/xml" -X GET -u username:password -o projectIssues.xml http://redmine/issues.xml?project_id=1&status_id=*`
 
 Step 3, Modify the bottom of the script to be your details.
 

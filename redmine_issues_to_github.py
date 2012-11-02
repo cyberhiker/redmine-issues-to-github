@@ -431,7 +431,7 @@ class MyRequest(urllib.request.Request):
 if __name__ == '__main__':   
     issuesfile = 'MaintenanceServiceIssues.xml'
     user = 'cyberhiker'
-    repo = 'RedSpartanMaintenance'
+    repo = 'IssueImportTest'
     authUser = 'cyberhiker'
     authPassword = 'k7%9F!8i'
     
